@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe "ActiveRecordAssociatedJsonb::Type" do
+RSpec.describe 'ActiveRecordAssociatedJsonb::Type' do
   it { expect(ActiveRecordAssociatedJsonb::Type).to be_present }
 end

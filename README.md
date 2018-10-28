@@ -1,30 +1,63 @@
-# Activerecord::Associated::Jsonb
+# ActiveRecordAssociatedJsonb
 
 [![Codeship Status for dipil-saud/activerecord-associated-jsonb](https://app.codeship.com/projects/20aaa450-bcca-0136-b9cd-4a53bd4c8e4c/status?branch=master)](https://app.codeship.com/projects/312783)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/activerecord/associated/jsonb`. To experiment with that code, run `bin/console` for an interactive prompt.
+The activerecord-jsonb-gem augments ActiveRecord's attribute API to allow accessing and updating data stored in jsonb columns as AR models.
+It allows using validations on the embedded record and tracks changes.
 
-TODO: Delete this and the text above, and describe your gem
+Currently only supports postgres jsonb columns.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'activerecord-associated-jsonb'
+gem 'activerecord-associated-jsonb', github: 'dipil-saud/activerecord-associated-jsonb'
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
+## Example Usage
 
-    $ gem install activerecord-associated-jsonb
+```ruby
+  require 'active_record_associated_jsonb'
 
-## Usage
+  class Address < ActiveRecordAssociatedJsonb::Record
+    attribute :line1
+    attribute :line2
+    attribute :city
+    attribute :zip_code, type: :integer
+    attribute :country, default: 'US'
 
-TODO: Write usage instructions here
+    ##### VALIDATIONS #####
+    validates :line1,
+      :city,
+      :zip_code,
+      :country,
+      presence: true
+    validates :zip_code, :format => /\A\d{5}(-\d{4})?\z/
+  end
+
+  class User < ActiveRecord::Base
+    attribute :addresses, ActiveRecordAssociatedJsonb::Type.new(child_class: Address)
+  end
+
+  # create a user with addresses
+  u = User.new(addresses: { line1: '...', zip_code: '...' ..}])
+
+  # or
+  u = User.new
+  a = Address.new({ line1: ... })
+  u.addresses << a
+
+  a.valid?
+  a.errors # shows details for each address attribute
+
+  u.valid?
+  u.errors # only shows addresses is invalid like it would for has_many relation
+```
 
 ## Development
 

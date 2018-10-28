@@ -20,6 +20,8 @@ module ActiveRecordAssociatedJsonb
 
     # @return [RecordArray]
     def cast(value)
+      @child_class = @child_class.constantize if @child_class.is_a?(String)
+
       RecordArray.new(value, @child_class)
     end
 

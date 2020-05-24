@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 # This class defines an Array of Records that serves as the interface for array objects stored in jsonb
 module ActiveRecordAssociatedJsonb
   class RecordArray
